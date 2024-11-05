@@ -4,8 +4,10 @@ const contenidoRoutes = require('./routes/contenidoRoutes');
 const { sequelize } = require('./conexion/database'); // Importa la instancia de Sequelize
 const fs = require('fs');
 const path = require('path');
+const cors = require('cors');
 const { Categoria, Genero, Actor, Contenido, ContenidoGenero, ContenidoActor } = require('./models/relaciones');
 // Middlewares
+app.use(cors());
 app.use(express.json());
 
 app.use('/contenido', contenidoRoutes);
