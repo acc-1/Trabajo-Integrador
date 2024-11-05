@@ -1,0 +1,40 @@
+En el archivo app.js deje comentado un script para leer el archivo json y migrar la informacion a la base de datos. 
+Este es un simple ejemplo para los insert
+
+
+
+
+INSERT INTO categorias (nombre) VALUES ('Película');
+INSERT INTO categorias (nombre) VALUES ('Serie');
+
+-- Insertar en la tabla generos
+INSERT INTO generos (nombre) VALUES ('Acción');
+INSERT INTO generos (nombre) VALUES ('Drama');
+INSERT INTO generos (nombre) VALUES ('Comedia');
+INSERT INTO generos (nombre) VALUES ('Ciencia Ficción');
+
+-- Insertar en la tabla actores
+INSERT INTO actores (nombre) VALUES ('Leonardo DiCaprio');
+INSERT INTO actores (nombre) VALUES ('Morgan Freeman');
+INSERT INTO actores (nombre) VALUES ('Scarlett Johansson');
+INSERT INTO actores (nombre) VALUES ('Tom Hanks');
+
+-- Insertar en la tabla contenido
+INSERT INTO contenido (poster, titulo, categoria_id, gen, busqueda, resumen, temporadas, trailer)
+VALUES 
+('poster1.jpg', 'Inception', 1, 'Ciencia Ficción', 'sueños, tecnología', 'Una película sobre la manipulación de sueños', 'N/A', 'trailer_inception.mp4'),
+('poster2.jpg', 'The Office', 2, 'Comedia', 'oficina, comedia', 'Serie de comedia ambientada en una oficina', '9', 'trailer_office.mp4'),
+('poster3.jpg', 'Shutter Island', 1, 'Drama', 'suspenso, misterio', 'Un thriller psicológico sobre un hospital psiquiátrico', 'N/A', 'trailer_shutter_island.mp4');
+
+-- Insertar en la tabla contenido_actores (relación contenido y actores)
+INSERT INTO contenido_actores (contenido_id, actor_id) VALUES (1, 1); -- Inception con Leonardo DiCaprio
+INSERT INTO contenido_actores (contenido_id, actor_id) VALUES (2, 4); -- The Office con Tom Hanks
+INSERT INTO contenido_actores (contenido_id, actor_id) VALUES (3, 1); -- Shutter Island con Leonardo DiCaprio
+INSERT INTO contenido_actores (contenido_id, actor_id) VALUES (3, 2); -- Shutter Island con Morgan Freeman
+
+-- Insertar en la tabla contenido_generos (relación contenido y géneros)
+INSERT INTO contenido_generos (contenido_id, genero_id) VALUES (1, 4); -- Inception - Ciencia Ficción
+INSERT INTO contenido_generos (contenido_id, genero_id) VALUES (1, 1); -- Inception - Acción
+INSERT INTO contenido_generos (contenido_id, genero_id) VALUES (2, 3); -- The Office - Comedia
+INSERT INTO contenido_generos (contenido_id, genero_id) VALUES (3, 2); -- Shutter Island - Drama
+INSERT INTO contenido_generos (contenido_id, genero_id) VALUES (3, 1); -- Shutter Island - Acción
