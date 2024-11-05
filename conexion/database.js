@@ -4,10 +4,10 @@ const dotenv = require('dotenv')
 dotenv.config();
 
 const { DBUSER, PASSWORD, HOST, DATABASE, PORT } = process.env;
-
+// en railway es necesario mantener el PORT, si es local se debe borrar.
 const sequelize = new Sequelize(DATABASE, DBUSER, PASSWORD, {
   host: HOST,
-  port: PORT, // Especifica el puerto aquí
+  // port: PORT, // Especifica el puerto aquí
   dialect: 'mysql',
   dialectOptions: {
     connectTimeout: 60000
