@@ -179,25 +179,22 @@ exports.deleteContent = async (req, res) => {
 };
 
 
-
 exports.filterContent = async (req, res) => {
-    const { titulo, genero, categoria } = req.query;
+    const { titulo, genero, categoria, actor } = req.query; 
 
-   
+    
     const whereClause = {};
-
-   
     if (titulo) {
-        whereClause.titulo = { [Op.like]: `%${titulo}%` }; 
+        whereClause.titulo = { [Op.like]: `%${titulo}%` };
     }
 
    
     const include = [
         {
             model: Actor,
-            where: titulo ? { nombre: { [Op.like]: `%${titulo}%` } } : undefined, // 
+            where: actor ? { nombre: { [Op.like]: `%${actor}%` } } : undefined, 
             through: { attributes: [] },
-            required: false 
+            required: !!actor 
         },
         {
             model: Genero,
@@ -213,7 +210,7 @@ exports.filterContent = async (req, res) => {
     ];
 
     try {
-       
+        
         const contenidos = await Contenido.findAll({
             where: whereClause,
             include
