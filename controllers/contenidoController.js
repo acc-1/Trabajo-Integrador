@@ -183,47 +183,52 @@ exports.deleteContent = async (req, res) => {
 // función para filtrar contenido
 exports.filterContent = async (req, res) => {
     const { titulo, genero, categoria } = req.query;  // Obtener filtros de los parámetros de consulta
+
+    // Crear el objeto `whereClause` para filtrar por título
     const whereClause = {};
 
-    // Agregar condición de título si el parámetro existe
+    // Si hay un título proporcionado, añadir condición para coincidencias parciales
     if (titulo) {
-        whereClause.titulo = { [Op.like]: `%${titulo}%` };
+        whereClause.titulo = { [Op.iLike]: `%${titulo}%` }; // `Op.iLike` para PostgreSQL (case-insensitive)
     }
 
-    // Configurar la sección de include para filtrar por género y categoría
+    // Configurar `include` para buscar en géneros y actores
     const include = [
         {
             model: Actor,
-            through: { attributes: [] }, // Oculta atributos de la tabla intermedia
-            required: false // Incluye el contenido incluso si no tiene actores asociados
+            where: titulo ? { nombre: { [Op.iLike]: `%${titulo}%` } } : undefined, // Búsqueda por actor si hay título
+            through: { attributes: [] },
+            required: false // Incluir aunque no haya coincidencia exacta
         },
         {
             model: Genero,
-            through: { attributes: [] }, // Oculta atributos de la tabla intermedia
-            where: genero ? { nombre: { [Op.like]: `%${genero}%` } } : undefined,
-            required: !!genero // Solo incluye géneros si se proporcionó el filtro de género
+            where: genero ? { nombre: { [Op.like]: `%${genero}%` } } : undefined, // Búsqueda por género si está en los parámetros
+            through: { attributes: [] },
+            required: !!genero
         },
         {
             model: Categoria,
             where: categoria ? { nombre: { [Op.like]: `%${categoria}%` } } : undefined,
-            required: !!categoria // Solo incluye categorías si se proporcionó el filtro de categoría
+            required: !!categoria
         }
     ];
 
     try {
-        // Realizar la búsqueda con las condiciones y relaciones
+        // Buscar el contenido con coincidencias parciales en título, género y actores
         const contenidos = await Contenido.findAll({
             where: whereClause,
-            include
+            include,
+            order: [[sequelize.literal(`titulo ILIKE '%${titulo}%' DESC`)]], // Ordena por coincidencia en el título
         });
-        
-        // Verificar si se encontraron resultados
+
+        // Verificar si hay resultados
         if (contenidos.length === 0) {
             return res.status(404).json({ error: 'No se encontraron contenidos que coincidan con los criterios de búsqueda.' });
         }
 
         res.status(200).json(contenidos);
     } catch (error) {
+        console.error('Error al buscar contenidos:', error);
         res.status(500).json({ error: 'Error al buscar contenidos' });
     }
 };
