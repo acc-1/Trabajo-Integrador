@@ -180,29 +180,28 @@ exports.deleteContent = async (req, res) => {
 
 
 
-// función para filtrar contenido
 exports.filterContent = async (req, res) => {
-    const { titulo, genero, categoria } = req.query;  // Obtener filtros de los parámetros de consulta
+    const { titulo, genero, categoria } = req.query;
 
-    // Crear el objeto `whereClause` para filtrar por título
+   
     const whereClause = {};
 
-    // Si hay un título proporcionado, añadir condición para coincidencias parciales
+   
     if (titulo) {
-        whereClause.titulo = { [Op.iLike]: `%${titulo}%` }; // `Op.iLike` para PostgreSQL (case-insensitive)
+        whereClause.titulo = { [Op.like]: `%${titulo}%` }; 
     }
 
-    // Configurar `include` para buscar en géneros y actores
+   
     const include = [
         {
             model: Actor,
-            where: titulo ? { nombre: { [Op.iLike]: `%${titulo}%` } } : undefined, // Búsqueda por actor si hay título
+            where: titulo ? { nombre: { [Op.like]: `%${titulo}%` } } : undefined, // 
             through: { attributes: [] },
-            required: false // Incluir aunque no haya coincidencia exacta
+            required: false 
         },
         {
             model: Genero,
-            where: genero ? { nombre: { [Op.like]: `%${genero}%` } } : undefined, // Búsqueda por género si está en los parámetros
+            where: genero ? { nombre: { [Op.like]: `%${genero}%` } } : undefined, 
             through: { attributes: [] },
             required: !!genero
         },
@@ -214,14 +213,13 @@ exports.filterContent = async (req, res) => {
     ];
 
     try {
-        // Buscar el contenido con coincidencias parciales en título, género y actores
+       
         const contenidos = await Contenido.findAll({
             where: whereClause,
-            include,
-            order: [[sequelize.literal(`titulo ILIKE '%${titulo}%' DESC`)]], // Ordena por coincidencia en el título
+            include
         });
 
-        // Verificar si hay resultados
+       
         if (contenidos.length === 0) {
             return res.status(404).json({ error: 'No se encontraron contenidos que coincidan con los criterios de búsqueda.' });
         }
