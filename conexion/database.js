@@ -1,15 +1,17 @@
 const { Sequelize } = require('sequelize');
+const dotenv = require('dotenv')
 
+dotenv.config();
 
-process.loadEnvFile();
-
-
-const { DBUSER, PASSWORD, HOST, DATABASE } = process.env;
-
+const { DBUSER, PASSWORD, HOST, DATABASE, PORT } = process.env;
 
 const sequelize = new Sequelize(DATABASE, DBUSER, PASSWORD, {
   host: HOST,
+  port: PORT, // Especifica el puerto aquí
   dialect: 'mysql',
+  dialectOptions: {
+    connectTimeout: 60000
+  },
 });
 
 
