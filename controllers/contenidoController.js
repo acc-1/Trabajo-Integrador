@@ -10,19 +10,24 @@ exports.getAllContent = async (req, res) => {
             include: [
                 {
                     model: Actor,
-                    through: { attributes: [] }, 
-                    required: false 
+                    through: { attributes: [] },
+                    required: false
                 },
                 {
                     model: Genero,
-                    through: { attributes: [] }, 
-                    required: false 
+                    through: { attributes: [] },
+                    required: false
+                },
+                {
+                    model: Categoria,
+                    attributes: ['nombre'],
+                    required: false
                 }
             ]
         });
         res.status(200).json(contenidos);
     } catch (error) {
-        console.error('Error retrieving content:', error); 
+        console.error('Error retrieving content:', error);
         res.status(500).json({ error: 'Error al obtener contenidos' });
     }
 };
